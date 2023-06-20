@@ -10,6 +10,9 @@ namespace Fbx
 	/// </summary>
 	public class FbxBinaryReader : FbxBinary
 	{
+
+		public static string readDebugLog = "---"; // 为了外部能获取流程数据 debug 用
+
 		private readonly BinaryReader stream;
 		private readonly ErrorLevel errorLevel;
 
@@ -39,9 +42,13 @@ namespace Fbx
 			var dataType = (char) stream.ReadByte();
 			switch (dataType)
 			{
+				case 'B':
+					readDebugLog += "find bool val; ";
+					return stream.ReadBoolean();
 				case 'Y':
 					return stream.ReadInt16();
 				case 'C':
+					readDebugLog += "find char val; ";
 					return (char)stream.ReadByte();
 				case 'I':
 					return stream.ReadInt32();
@@ -60,6 +67,7 @@ namespace Fbx
 				case 'i':
 					return ReadArray(br => br.ReadInt32(), typeof(int));
 				case 'b':
+					readDebugLog += "find bool array; ";
 					return ReadArray(br => br.ReadBoolean(), typeof(bool));
 				case 'S':
 					var len = stream.ReadInt32();

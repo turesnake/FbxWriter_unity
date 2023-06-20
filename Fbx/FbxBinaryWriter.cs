@@ -5,6 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 
+
+
+
 namespace Fbx
 {
 	/// <summary>
@@ -54,7 +57,9 @@ namespace Fbx
 		private static readonly Dictionary<Type, WriterInfo> writePropertyActions
 			= new Dictionary<Type, WriterInfo>
 			{
-				{ typeof(int),	new WriterInfo('I', (sw, obj) => sw.Write((int)obj)) },
+				// 参见 https://code.blender.org/2013/08/fbx-binary-file-format-specification/ 中描述;
+				{ typeof(bool),	  new WriterInfo('C', (sw, obj) => sw.Write((bool)obj)) },
+				{ typeof(int),	  new WriterInfo('I', (sw, obj) => sw.Write((int)obj)) },
 				{ typeof(short),  new WriterInfo('Y', (sw, obj) => sw.Write((short)obj)) },
 				{ typeof(long),   new WriterInfo('L', (sw, obj) => sw.Write((long)obj)) },
 				{ typeof(float),  new WriterInfo('F', (sw, obj) => sw.Write((float)obj)) },
@@ -159,7 +164,16 @@ namespace Fbx
 			if (writerInfo.writer == null) // Array type
 			{
 				var elementType = obj.GetType().GetElementType();
-				WriteArray((Array) obj, elementType, writePropertyActions[elementType].writer);
+
+				if( writePropertyActions.ContainsKey( elementType ) == true ) 
+				{
+					WriteArray((Array) obj, elementType, writePropertyActions[elementType].writer);
+				}
+				else 
+				{
+					// 存在问题, 暂不处理, 直接 上抛并放弃整个 write 操作
+					throw new Exception( "writePropertyActions 中没找到 elementType 这个 key " + elementType.Name );
+				}
 			} else
 				writerInfo.writer(stream, obj);
 		}

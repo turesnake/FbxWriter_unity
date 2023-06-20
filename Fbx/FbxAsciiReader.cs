@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 
+using System.Globalization;
+
 namespace Fbx
 {
 	/// <summary>

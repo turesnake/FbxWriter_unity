@@ -1,3 +1,14 @@
+
+
+fork from https://github.com/hamish-milne/FbxWriter
+
+used in unity editor:
+- put "Fbx" folder in unity project
+- put "Editor" folder in unity project
+- find buttons in unity Tools manu
+
+
+
 # FBX manipulation for .NET
 
 - Read FBX binary files (**Done**)
